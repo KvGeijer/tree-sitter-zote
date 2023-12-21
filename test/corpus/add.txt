@@ -1,0 +1,13 @@
+===============
+Binary Addition
+===============
+
+1 + 2;
+
+---
+
+(source_file
+  (expression_statement
+    (binary_expression (integer_literal) (integer_literal))
+  )
+)

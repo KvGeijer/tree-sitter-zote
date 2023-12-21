@@ -1,0 +1,13 @@
+==============
+If expression
+==============
+
+if true true else false;
+
+---
+
+(source_file
+  (expression_statement
+    (if_expression (boolean_literal) (boolean_literal) (boolean_literal))
+  )
+)
