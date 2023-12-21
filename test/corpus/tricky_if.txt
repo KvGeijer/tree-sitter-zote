@@ -8,6 +8,6 @@ if true [1];
 
 (source_file
   (expression_statement
-    (if_expression (boolean_literal) (array_expression (integer_literal)))
+    (if_expression (boolean_literal) (list_expression (integer_literal)))
   )
 )

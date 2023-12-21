@@ -1,6 +1,6 @@
-==============
-If expression
-==============
+================
+Match expression
+================
 
 match [1,2,3] {
   (1, 2, 4) -> false,
@@ -13,7 +13,7 @@ match [1,2,3] {
 (source_file
   (expression_statement
     (match_expression
-      (array_expression (integer_literal) (integer_literal) (integer_literal))
+      (list_expression (integer_literal) (integer_literal) (integer_literal))
       (match_block
         (match_arm
           (par_pattern (integer_literal) (integer_literal) (integer_literal))

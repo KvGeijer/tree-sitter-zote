@@ -1,5 +1,5 @@
 ================
-Array expression
+List expression
 ================
 
 [1,2 ,   3];
@@ -7,6 +7,6 @@ Array expression
 
 (source_file
   (expression_statement
-    (array_expression (integer_literal) (integer_literal) (integer_literal))
+    (list_expression (integer_literal) (integer_literal) (integer_literal))
   )
 )

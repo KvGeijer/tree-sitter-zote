@@ -1,5 +1,6 @@
 // Adapted from https://github.com/tree-sitter/tree-sitter-rust/blob/master/grammar.js#L16
 const PREC = {
+  call: 15,
   unary: 12,
   exponential: 11,
   multiplicative: 10,
@@ -26,7 +27,9 @@ module.exports = grammar({
     ),
 
     _expression: $ => choice(
+      $.call_expression,
       $.binary_expression,
+      $.unary_expression,
       $._literal,
       $.identifier,
       $.block,
@@ -34,8 +37,65 @@ module.exports = grammar({
       $.for_expression,
       $.while_expression,
       $.match_expression,
+      $.list_expression,
+      $.index_expression,
+      $.assign_expression,
+      $.break_expression,
+      $.continue_expression,
+      $.return_expression,
+      $.lambda_expression,
+    ),
 
-      // TODO: more
+    lambda_expression: $ => seq(
+      '\\',
+      sepBy(',', $._pattern),
+      '->',
+      $._expression,
+    ),
+    
+    return_expression: $ => choice(
+      prec.left(seq('return', $._expression)),
+      prec(-1, 'return'),
+    ),
+    
+    break_expression: $ => 'break',
+    continue_expression: $ => 'continue',
+    
+    assign_expression: $ => seq(
+      $._pattern,
+      '=',
+      $._expression,
+    ),
+
+    index_expression: $ => prec(PREC.call, seq(
+      $._expression, 
+      token.immediate('['), 
+      choice(
+        $.single_index,
+        $.range_index,
+      ),
+      ']')
+    ),
+
+    single_index: $ => $._expression,
+
+    range_index: $ => seq(
+      optional($._expression),
+      ':',
+      optional($._expression),
+      optional(seq(':', optional($._expression))),
+    ),
+    
+    call_expression: $ => prec(PREC.call, seq(
+      field('function', $._expression),
+      field('arguments', $.arguments),
+    )),    
+
+    arguments: $ => seq(
+      token.immediate('('),
+      sepBy(',', $._expression),
+      optional(','),
+      ')',
     ),
 
     if_expression: $ => prec.right(seq(
@@ -117,11 +177,20 @@ module.exports = grammar({
       
     // ),
 
+    list_expression: $ => seq(
+      '[',
+      seq(
+        sepBy(',', $._expression),
+        optional(','),
+      ),
+      ']',
+    ),
+    
     // Adapted from https://github.com/tree-sitter/tree-sitter-rust/blob/master/grammar.js#L1017
     binary_expression: $ => {
       const table = [
-        [PREC.and, '&&'],
-        [PREC.or, '||'],
+        [PREC.and, 'and'],
+        [PREC.or, 'or'],
         [PREC.exponential, '^'],
         [PREC.comparative, choice('==', '!=', '<', '<=', '>', '>=')],
         [PREC.additive, choice('+', '-')],
@@ -137,6 +206,11 @@ module.exports = grammar({
       ))));
     },
 
+    unary_expression: $ => prec(PREC.unary, seq(
+      choice('-', '!'),
+      $._expression,
+    )),
+
     _pattern: $ => choice(
       $.identifier,
       $._literal,
@@ -145,10 +219,7 @@ module.exports = grammar({
     
     par_pattern: $ => seq(
       '(',
-      optional(seq(
-        repeat(seq($._pattern, ',')),
-        $._pattern,
-      )),
+      sepBy(',', $._pattern),
       ')'
     ),
     
@@ -187,3 +258,29 @@ module.exports = grammar({
   }
 });
 
+/**
+ * Creates a rule to match one or more of the rules separated by the separator.
+ *
+ * @param {RuleOrLiteral} sep - The separator to use.
+ * @param {RuleOrLiteral} rule
+ *
+ * @return {SeqRule}
+ *
+ */
+function sepBy1(sep, rule) {
+  return seq(rule, repeat(seq(sep, rule)));
+}
+
+
+/**
+ * Creates a rule to optionally match one or more of the rules separated by the separator.
+ *
+ * @param {RuleOrLiteral} sep - The separator to use.
+ * @param {RuleOrLiteral} rule
+ *
+ * @return {ChoiceRule}
+ *
+ */
+function sepBy(sep, rule) {
+  return optional(sepBy1(sep, rule));
+}
