@@ -1,0 +1,12 @@
+================
+Array expression
+================
+
+[1,2 ,   3];
+---
+
+(source_file
+  (expression_statement
+    (array_expression (integer_literal) (integer_literal) (integer_literal))
+  )
+)

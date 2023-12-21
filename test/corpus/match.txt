@@ -1,0 +1,33 @@
+==============
+If expression
+==============
+
+match [1,2,3] {
+  (1, 2, 4) -> false,
+  (1, val) -> false,
+  something -> true,
+};
+
+---
+
+(source_file
+  (expression_statement
+    (match_expression
+      (array_expression (integer_literal) (integer_literal) (integer_literal))
+      (match_block
+        (match_arm
+          (par_pattern (integer_literal) (integer_literal) (integer_literal))
+          (boolean_literal)
+        )
+        (match_arm
+          (par_pattern (integer_literal) (identifier))
+          (boolean_literal)
+        )
+        (match_arm
+          (identifier)
+          (boolean_literal)
+        )
+      )
+    )
+  )
+)

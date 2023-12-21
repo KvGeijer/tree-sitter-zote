@@ -1,0 +1,13 @@
+====================
+Call expression
+====================
+
+f(x);
+
+---
+
+(source_file
+  (expression_statement
+    (call_expression (identifier) (arguments (identifier)))
+  )
+)
