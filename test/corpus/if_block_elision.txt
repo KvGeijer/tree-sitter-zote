@@ -1,0 +1,32 @@
+==================================
+If expression with block ; elision
+==================================
+
+if true false else {
+  print("OK")
+}
+
+if false nil else {}
+---
+
+(source_file
+  (expression_statement
+    (if_expression 
+      (boolean_literal) 
+      (boolean_literal) 
+      (block 
+        (call_expression 
+          (identifier) 
+          (arguments (string_literal))
+        )
+      )
+    )
+  )
+  (expression_statement
+    (if_expression 
+      (boolean_literal) 
+      (nil_literal) 
+      (block)
+    )
+  )
+)
