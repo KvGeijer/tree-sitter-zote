@@ -1,5 +1,6 @@
 // Adapted from https://github.com/tree-sitter/tree-sitter-rust/blob/master/grammar.js#L16
 const PREC = {
+  block_ending: 20,
   call: 15,
   unary: 12,
   exponential: 11,
@@ -39,8 +40,13 @@ module.exports = grammar({
       field('name', $.identifier),
       field('parameters', $.parameters),
       '->',
-      field('body', $._expression),
-      ';' // TODO: ; elision
+      
+      field('body', 
+        choice(
+          $._expression_ending_with_block,
+          seq($._expression, ';'),
+        )
+      ),
     ),
 
     parameters: $ => seq(
@@ -51,7 +57,7 @@ module.exports = grammar({
 
     expression_statement: $ => choice(
       seq($._expression, ';'),
-      // $._expression_ending_with_block,
+      $._expression_ending_with_block,
     ),
 
     _expression: $ => choice(
@@ -167,7 +173,7 @@ module.exports = grammar({
       '->',
       choice(
         seq(field('value', $._expression), ','),
-        // field('value', prec(1, $._expression_ending_with_block)),
+        field('value', prec(1, $._expression_ending_with_block)),
       ),
     )),
 
@@ -180,30 +186,54 @@ module.exports = grammar({
 
     block: $ => seq(
       '{',
-      repeat($._statement),
+      optional(seq(
+        repeat($._statement),
+        choice(
+          $._statement,
+          $._expression,
+        ),
+      )),
       '}'
     ),
 
-    // _expression_ending_with_block: $ => choice(
-    //   $.block,
-    //   $.if_expression_ending_with_block,
-    //   $.for_expression_ending_with_block,
-    //   $.while_expression_ending_with_block,
-    //   $.match_expression,
-    // ),
+    _expression_ending_with_block: $ => prec(PREC.block_ending, choice(
+      $.block,
+      alias($.if_expression_ending_with_block, $.if_expression),
+      alias($.for_expression_ending_with_block, $.for_expression),
+      alias($.while_expression_ending_with_block, $.while_expression),
+      $.match_expression,
+    )),
 
 
-    // if_expression_ending_with_block: $ => seq(
-
-    // ),
+    if_expression_ending_with_block: $ => prec.right(choice(
+        seq(
+          'if',
+          field('condition', $._expression),
+          field('consequence', $._expression_ending_with_block),
+        ),
+        seq(
+          'if',
+          field('condition', $._expression),
+          field('consequence', $._expression),
+          'else',
+          field('alternative', $._expression_ending_with_block),
+        ),
+    )),    
     
-    // for_expression_ending_with_block: $ => seq(
+    for_expression_ending_with_block: $ => seq(
+      'for',
+      field('pattern', $._pattern),
+      'in',
+      field('value', $._expression),
+      field('body', $._expression_ending_with_block),
       
-    // ),
+    ),
     
-    // while_expression_ending_with_block: $ => seq(
-      
-    // ),
+    while_expression_ending_with_block: $ => seq(
+      'while',
+      field('condition', $._expression),
+      field('body', $._expression_ending_with_block),
+    ),
 
     list_expression: $ => seq(
       '[',
