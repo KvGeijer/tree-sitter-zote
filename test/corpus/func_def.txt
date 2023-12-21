@@ -1,0 +1,21 @@
+======================
+Assign expression 
+======================
+
+fn foo(b) -> {
+  return b + 2;
+};
+
+---
+
+(source_file
+  (function_declaration
+    (identifier)
+    (parameters (identifier))
+    (block
+      (expression_statement 
+        (return_expression (binary_expression (identifier) (integer_literal)))
+      )
+    )
+  )
+)

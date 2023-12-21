@@ -1,0 +1,19 @@
+======================
+Assign expression 
+======================
+
+(a,(c, d)) = 1;
+
+---
+
+(source_file
+  (expression_statement
+    (assign_expression
+      (par_pattern
+        (identifier)
+        (par_pattern (identifier) (identifier))
+      )
+      (integer_literal)
+    )
+  )
+)

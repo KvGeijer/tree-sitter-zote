@@ -18,7 +18,35 @@ module.exports = grammar({
 
     _statement: $ =>  choice(
       $.expression_statement,
+      $._declaration_statement,
       // TODO: Add declarations
+    ),
+
+    _declaration_statement: $ => choice(
+      $.function_declaration,
+      $.variable_declaration,
+    ),
+
+    variable_declaration: $ => seq(
+      $._pattern,
+      ':=',
+      $._expression,
+      ';'
+    ),
+
+    function_declaration: $ => seq(
+      'fn',
+      field('name', $.identifier),
+      field('parameters', $.parameters),
+      '->',
+      field('body', $._expression),
+      ';' // TODO: ; elision
+    ),
+
+    parameters: $ => seq(
+      '(',
+      sepBy(',', $._pattern),
+      ')',
     ),
 
     expression_statement: $ => choice(
