@@ -1,0 +1,19 @@
+====================
+Assign to index
+====================
+
+x[1] = 2;
+
+---
+
+(source_file
+  (expression_statement
+    (assign_expression
+      (index_pattern
+        (identifier)
+        (single_index (integer_literal))
+      )
+      (integer_literal)
+    )
+  )
+)

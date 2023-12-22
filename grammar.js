@@ -324,6 +324,17 @@ module.exports = grammar({
       $.identifier,
       $._literal,
       $.par_pattern,
+      $.index_pattern,
+    ),
+
+    index_pattern: $ => prec(PREC.call, seq(
+      $._expression, 
+      token.immediate('['), 
+      choice(
+        $.single_index,
+        $.range_index,
+      ),
+      ']')
     ),
     
     // Not optimal... 
