@@ -293,6 +293,8 @@ module.exports = grammar({
       ']',
     ),
     
+    // TODO: Pipes are not binary expressions, as they can take
+    // a slice to the right, and not a real expression.
     binary_expression: $ => {
       const table = [
         [prec.left, PREC.pipe, '>>'],
