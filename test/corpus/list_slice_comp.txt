@@ -1,0 +1,13 @@
+===================
+List slice creation
+===================
+
+[1:x];
+
+---
+
+(source_file
+  (expression_statement
+    (list_comp_expression (nonempty_range_index (integer_literal) (identifier) ) )
+  )
+)

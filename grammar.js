@@ -85,6 +85,7 @@ module.exports = grammar({
       $.while_expression,
       $.match_expression,
       $.list_expression,
+      $.list_comp_expression,
       $.index_expression,
       $.assign_expression,
       $.modify_assign_expression,
@@ -143,6 +144,16 @@ module.exports = grammar({
       optional($._expression),
       ':',
       optional($._expression),
+      optional(choice(
+        seq(':', optional($._expression)),
+        ':'
+      )),
+    ),
+
+    nonempty_range_index: $ => seq(
+      $._expression,
+      ':',
+      $._expression,
       optional(seq(':', optional($._expression))),
     ),
     
@@ -267,6 +278,12 @@ module.exports = grammar({
         sepBy(',', $._expression),
         optional(','),
       ),
+      ']',
+    ),
+
+    list_comp_expression: $ => seq(
+      '[',
+      $.nonempty_range_index,
       ']',
     ),
     
