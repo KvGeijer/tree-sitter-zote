@@ -16,8 +16,14 @@ const PREC = {
 module.exports = grammar({
   name: 'Zote',
 
+  extras: $ => [
+    /\s/,
+    $.line_comment,
+  ],
+
   rules: {
     source_file: $ => repeat(seq($._statement, optional(repeat(';')))),
+
 
     _statement: $ =>  choice(
       $.expression_statement,
@@ -117,7 +123,7 @@ module.exports = grammar({
     continue_expression: $ => 'continue',
     
     modify_assign_expression: $ => seq(
-      field('lvalue', $.identifier),
+      field('lvalue', choice($.identifier, $.index_pattern)),
       field('operator', choice('+=', '++=', '-=', '*=', '++=', '/=', '%=', '^=', 'or=', 'and=')),
       field('rvalue', $._expression),
     ),
@@ -376,6 +382,10 @@ module.exports = grammar({
     identifier: $ => token(
       /[\w--\d]\w*/
     ),
+
+    line_comment: _ => token(seq(
+      '//', /.*/,
+    )),
   }
 });
 
