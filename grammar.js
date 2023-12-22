@@ -1,5 +1,7 @@
 // Adapted from https://github.com/tree-sitter/tree-sitter-rust/blob/master/grammar.js#L16
 const PREC = {
+  nonempty_range: 101,
+  range:100,
   block_ending: 20,
   call: 15,
   unary: 12,
@@ -11,6 +13,7 @@ const PREC = {
   or: 2,
   pipe: 1,
   init_pipe: 0,
+  list: -1,
 };
 
 module.exports = grammar({
@@ -99,6 +102,8 @@ module.exports = grammar({
       $.continue_expression,
       $.return_expression,
       $.lambda_expression,
+      $.pipe_expression,
+      $.init_pipe_expression,
     ),
 
     group_expression: $ => seq(
@@ -136,17 +141,30 @@ module.exports = grammar({
 
     index_expression: $ => prec(PREC.call, seq(
       $._expression, 
+      $._index
+    )),
+
+    _non_immediate_index: $ => seq(
+      '[', 
+      choice(
+        $.single_index,
+        $.range_index,
+      ),
+      ']'
+    ),
+    
+    _index: $ => seq(
       token.immediate('['), 
       choice(
         $.single_index,
         $.range_index,
       ),
-      ']')
+      ']'
     ),
 
     single_index: $ => $._expression,
 
-    range_index: $ => seq(
+    range_index: $ => prec.left(PREC.range, seq(
       optional($._expression),
       ':',
       optional($._expression),
@@ -154,14 +172,14 @@ module.exports = grammar({
         seq(':', optional($._expression)),
         ':'
       )),
-    ),
+    )),
 
-    nonempty_range_index: $ => seq(
+    nonempty_range_index: $ => prec.left(PREC.nonempty_range, seq(
       $._expression,
       ':',
       $._expression,
       optional(seq(':', optional($._expression))),
-    ),
+    )),
     
     call_expression: $ => prec(PREC.call, seq(
       field('function', $._expression),
@@ -278,26 +296,36 @@ module.exports = grammar({
       field('body', $._expression_ending_with_block),
     ),
 
-    list_expression: $ => seq(
+    list_expression: $ => prec.left(PREC.list, seq(
       '[',
       seq(
         sepBy(',', $._expression),
         optional(','),
       ),
       ']',
-    ),
+    )),
 
-    list_comp_expression: $ => seq(
+    list_comp_expression: $ => prec.left(PREC.list, seq(
       '[',
       $.nonempty_range_index,
       ']',
-    ),
+    )),
+
+    pipe_expression: $ => prec.left(PREC.pipe, seq(
+      $._expression,
+      '>>',
+      choice($._expression, $._non_immediate_index)
+    )),
+    
+    init_pipe_expression: $ => prec.left(seq(
+      '\\>>',
+      choice($._expression, $._non_immediate_index)
+    )),
     
     // TODO: Pipes are not binary expressions, as they can take
     // a slice to the right, and not a real expression.
     binary_expression: $ => {
       const table = [
-        [prec.left, PREC.pipe, '>>'],
         [prec.left, PREC.and, 'and'],
         [prec.left, PREC.or, 'or'],
         [prec.left, PREC.exponential, '^'],
@@ -317,7 +345,6 @@ module.exports = grammar({
 
     unary_expression: $ => {
       const table = [
-        [PREC.init_pipe, '\\>>'],
         [PREC.unary, choice('-', '!')],
       ];
 
@@ -337,13 +364,8 @@ module.exports = grammar({
 
     index_pattern: $ => prec(PREC.call, seq(
       $._expression, 
-      token.immediate('['), 
-      choice(
-        $.single_index,
-        $.range_index,
-      ),
-      ']')
-    ),
+      $._index
+    )),
     
     // Not optimal... 
     par_pattern: $ => seq(

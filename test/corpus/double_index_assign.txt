@@ -1,0 +1,22 @@
+====================
+Assign to double mod index
+====================
+
+x[1][2] += 2;
+
+---
+
+(source_file
+  (expression_statement
+    (modify_assign_expression
+      (index_pattern
+		(index_expression
+		  (identifier)
+		  (single_index (integer_literal))
+		)
+		(single_index (integer_literal))
+	  )
+	  (integer_literal)
+    )
+  )
+)

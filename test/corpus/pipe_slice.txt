@@ -1,0 +1,41 @@
+====================
+Pipe slice associativity
+====================
+
+split("\n") >> [1:] >> map(ints);
+\>> [1:] >> map(ints);
+
+---
+
+(source_file
+  (expression_statement 
+    (pipe_expression
+      (pipe_expression
+        (call_expression
+          (identifier)
+          (arguments
+            (string_literal)))
+        (range_index (integer_literal))
+      )
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier)
+        )
+      )
+    )
+  )
+  (expression_statement 
+    (pipe_expression
+      (init_pipe_expression
+        (range_index (integer_literal))
+      )
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier)
+        )
+      )
+    )
+  )
+)
