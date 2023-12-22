@@ -73,6 +73,7 @@ module.exports = grammar({
     ),
 
     _expression: $ => choice(
+      $.group_expression,
       $.call_expression,
       $.binary_expression,
       $.unary_expression,
@@ -91,6 +92,12 @@ module.exports = grammar({
       $.continue_expression,
       $.return_expression,
       $.lambda_expression,
+    ),
+
+    group_expression: $ => seq(
+      '(',
+      $._expression,
+      ')'
     ),
 
     lambda_expression: $ => seq(
@@ -302,9 +309,10 @@ module.exports = grammar({
       $.par_pattern,
     ),
     
+    // Not optimal... 
     par_pattern: $ => seq(
       '(',
-      sepBy(',', $._pattern),
+      sepBy2(',', $._pattern),
       ')'
     ),
     
@@ -342,6 +350,19 @@ module.exports = grammar({
     ),
   }
 });
+
+/**
+ * Creates a rule to match one or more of the rules separated by the separator.
+ *
+ * @param {RuleOrLiteral} sep - The separator to use.
+ * @param {RuleOrLiteral} rule
+ *
+ * @return {SeqRule}
+ *
+ */
+function sepBy2(sep, rule) {
+  return seq(rule, sep, rule, repeat(seq(sep, rule)));
+}
 
 /**
  * Creates a rule to match one or more of the rules separated by the separator.

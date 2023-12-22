@@ -1,0 +1,16 @@
+======================
+Parenthesis expression
+======================
+
+2 * (1 + 1);
+
+---
+
+(source_file
+  (expression_statement
+    (binary_expression
+      (integer_literal)
+      (group_expression (binary_expression (integer_literal) (integer_literal)))
+    )
+  )
+)
