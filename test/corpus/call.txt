@@ -1,13 +1,13 @@
 ====================
-Call expression
+Call pipe expression
 ====================
 
-f(x);
+x >> f;
 
 ---
 
 (source_file
   (expression_statement
-    (call_expression (identifier) (arguments (identifier)))
+    (binary_expression (identifier) (identifier))
   )
 )

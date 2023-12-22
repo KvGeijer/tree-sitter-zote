@@ -1,0 +1,19 @@
+====================
+Call pipe expression
+====================
+
+-x >> const(1) >> print;
+
+---
+
+(source_file
+  (expression_statement
+    (binary_expression 
+      (binary_expression 
+        (unary_expression (identifier))
+        (call_expression (identifier) (arguments (integer_literal)))
+      ) 
+      (identifier)
+    )
+  )
+)

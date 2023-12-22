@@ -9,6 +9,8 @@ const PREC = {
   comparative: 4,
   and: 3,
   or: 2,
+  pipe: 1,
+  init_pipe: 0,
 };
 
 module.exports = grammar({
@@ -20,7 +22,17 @@ module.exports = grammar({
     _statement: $ =>  choice(
       $.expression_statement,
       $._declaration_statement,
+      $.macro_statement,
       // TODO: Add declarations
+    ),
+
+    macro_statement: $ => seq(
+      $.identifier,
+      token.immediate('!'),
+      token.immediate('('),
+      sepBy(',', $._expression),
+      ')',
+      ';'
     ),
 
     _declaration_statement: $ => choice(
@@ -244,19 +256,19 @@ module.exports = grammar({
       ']',
     ),
     
-    // Adapted from https://github.com/tree-sitter/tree-sitter-rust/blob/master/grammar.js#L1017
     binary_expression: $ => {
       const table = [
-        [PREC.and, 'and'],
-        [PREC.or, 'or'],
-        [PREC.exponential, '^'],
-        [PREC.comparative, choice('==', '!=', '<', '<=', '>', '>=')],
-        [PREC.additive, choice('+', '-')],
-        [PREC.multiplicative, choice('*', '/', '%')],
+        [prec.left, PREC.pipe, '>>'],
+        [prec.left, PREC.and, 'and'],
+        [prec.left, PREC.or, 'or'],
+        [prec.left, PREC.exponential, '^'],
+        [prec.left, PREC.comparative, choice('==', '!=', '<', '<=', '>', '>=')],
+        [prec.left, PREC.additive, choice('+', '-')],
+        [prec.left, PREC.multiplicative, choice('*', '/', '%')],
       ];
 
       // @ts-ignore
-      return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
+      return choice(...table.map(([dir, precedence, operator]) => dir(precedence, seq(
         field('left', $._expression),
         // @ts-ignore
         field('operator', operator),
@@ -264,10 +276,18 @@ module.exports = grammar({
       ))));
     },
 
-    unary_expression: $ => prec(PREC.unary, seq(
-      choice('-', '!'),
-      $._expression,
-    )),
+    unary_expression: $ => {
+      const table = [
+        [PREC.init_pipe, '\\>>'],
+        [PREC.unary, choice('-', '!')],
+      ];
+
+      // @ts-ignore
+      return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
+        field('operator', operator),
+        field('right', $._expression),
+      ))));
+    },
 
     _pattern: $ => choice(
       $.identifier,

@@ -1,0 +1,18 @@
+====================
+Init pipe expression
+====================
+
+xs >> map(\>> foo >> 1);
+
+---
+
+(source_file
+  (expression_statement (binary_expression
+    (identifier)
+    (call_expression (identifier) (arguments
+      (unary_expression
+        (binary_expression (identifier) (integer_literal))
+      )
+    ))
+  ))
+)
