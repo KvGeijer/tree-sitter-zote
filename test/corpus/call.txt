@@ -8,6 +8,6 @@ x >> f;
 
 (source_file
   (expression_statement
-    (binary_expression (identifier) (identifier))
+    (pipe_expression (identifier) (identifier))
   )
 )

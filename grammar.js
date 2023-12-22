@@ -99,6 +99,8 @@ module.exports = grammar({
       $.continue_expression,
       $.return_expression,
       $.lambda_expression,
+      $.pipe_expression,
+      $.init_pipe_expression,
     ),
 
     group_expression: $ => seq(
@@ -136,12 +138,16 @@ module.exports = grammar({
 
     index_expression: $ => prec(PREC.call, seq(
       $._expression, 
+      $._index
+    )),
+
+    _index: $ => seq(
       token.immediate('['), 
       choice(
         $.single_index,
         $.range_index,
       ),
-      ']')
+      ']'
     ),
 
     single_index: $ => $._expression,
@@ -292,12 +298,22 @@ module.exports = grammar({
       $.nonempty_range_index,
       ']',
     ),
+
+    pipe_expression: $ => prec.left(PREC.pipe, seq(
+      $._expression,
+      '>>',
+      choice($._expression, $._index)
+    )),
+    
+    init_pipe_expression: $ => prec.left(seq(
+      '\\>>',
+      choice($._expression, $._index)
+    )),
     
     // TODO: Pipes are not binary expressions, as they can take
     // a slice to the right, and not a real expression.
     binary_expression: $ => {
       const table = [
-        [prec.left, PREC.pipe, '>>'],
         [prec.left, PREC.and, 'and'],
         [prec.left, PREC.or, 'or'],
         [prec.left, PREC.exponential, '^'],
@@ -317,7 +333,6 @@ module.exports = grammar({
 
     unary_expression: $ => {
       const table = [
-        [PREC.init_pipe, '\\>>'],
         [PREC.unary, choice('-', '!')],
       ];
 
@@ -337,13 +352,8 @@ module.exports = grammar({
 
     index_pattern: $ => prec(PREC.call, seq(
       $._expression, 
-      token.immediate('['), 
-      choice(
-        $.single_index,
-        $.range_index,
-      ),
-      ']')
-    ),
+      $._index
+    )),
     
     // Not optimal... 
     par_pattern: $ => seq(

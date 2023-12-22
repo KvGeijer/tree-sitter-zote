@@ -7,11 +7,11 @@ xs >> map(\>> foo >> 1);
 ---
 
 (source_file
-  (expression_statement (binary_expression
+  (expression_statement (pipe_expression
     (identifier)
     (call_expression (identifier) (arguments
-      (unary_expression
-        (binary_expression (identifier) (integer_literal))
+      (init_pipe_expression
+        (pipe_expression (identifier) (integer_literal))
       )
     ))
   ))

@@ -1,5 +1,5 @@
 ====================
-Call pipe expression
+Double call pipe expression
 ====================
 
 -x >> const(1) >> print;
@@ -8,8 +8,8 @@ Call pipe expression
 
 (source_file
   (expression_statement
-    (binary_expression 
-      (binary_expression 
+    (pipe_expression 
+      (pipe_expression 
         (unary_expression (identifier))
         (call_expression (identifier) (arguments (integer_literal)))
       ) 
