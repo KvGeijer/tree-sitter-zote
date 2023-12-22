@@ -1,0 +1,16 @@
+===============
+Addition Assign
+===============
+
+x += 1;
+
+---
+
+(source_file
+  (expression_statement
+    (modify_assign_expression
+      (identifier)
+      (integer_literal)
+    )
+  )
+)

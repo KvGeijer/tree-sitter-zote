@@ -86,6 +86,7 @@ module.exports = grammar({
       $.list_expression,
       $.index_expression,
       $.assign_expression,
+      $.modify_assign_expression,
       $.break_expression,
       $.continue_expression,
       $.return_expression,
@@ -107,6 +108,12 @@ module.exports = grammar({
     break_expression: $ => 'break',
     continue_expression: $ => 'continue',
     
+    modify_assign_expression: $ => seq(
+      field('lvalue', $.identifier),
+      field('operator', choice('+=', '++=', '-=', '*=', '++=', '/=', '%=', '^=', 'or=', 'and=')),
+      field('rvalue', $._expression),
+    ),
+
     assign_expression: $ => seq(
       $._pattern,
       '=',
