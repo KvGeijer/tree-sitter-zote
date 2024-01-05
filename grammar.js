@@ -129,7 +129,7 @@ module.exports = grammar({
     
     modify_assign_expression: $ => seq(
       field('lvalue', choice($.identifier, $.index_pattern)),
-      field('operator', choice('+=', '++=', '-=', '*=', '++=', '/=', '%=', '^=', 'or=', 'and=')),
+      field('operator', choice('+=', '++=', '-=', '*=', '/=', '%=', '^=', 'or=', 'and=')),
       field('rvalue', $._expression),
     ),
 
@@ -330,7 +330,7 @@ module.exports = grammar({
         [prec.left, PREC.or, 'or'],
         [prec.left, PREC.exponential, '^'],
         [prec.left, PREC.comparative, choice('==', '!=', '<', '<=', '>', '>=')],
-        [prec.left, PREC.additive, choice('+', '-')],
+        [prec.left, PREC.additive, choice('+', '-', '++')],
         [prec.left, PREC.multiplicative, choice('*', '/', '%')],
       ];
 

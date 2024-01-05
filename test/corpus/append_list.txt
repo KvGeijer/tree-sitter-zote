@@ -1,0 +1,16 @@
+==============
+List concat
+==============
+
+xs ++ [1];
+
+---
+
+(source_file
+  (expression_statement
+    (binary_expression
+	  (identifier) 
+	  (list_expression (integer_literal))
+	)
+  )
+)
