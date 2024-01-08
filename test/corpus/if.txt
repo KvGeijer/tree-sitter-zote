@@ -1,13 +1,25 @@
 ==============
-If expression
+Double strings
 ==============
 
-if true true else false;
+"#" and id("."); 
+"id >> print('hej')";
+'id' >> print('hej');
 
 ---
 
 (source_file
   (expression_statement
-    (if_expression (boolean_literal) (boolean_literal) (boolean_literal))
+    (binary_expression
+      (string_literal)
+      (call_expression (identifier) (arguments (string_literal)))
+    )
+  )
+  (expression_statement (string_literal))
+  (expression_statement
+    (pipe_expression 
+      (string_literal) 
+      (call_expression (identifier) (arguments (string_literal)))
+    )
   )
 )

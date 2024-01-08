@@ -400,8 +400,8 @@ module.exports = grammar({
     ),
 
     string_literal: $ => choice(
-      token(/".*?"/),
-      token(/'.*?'/)
+      token(/"[^"]*?"/),
+      token(/'[^']*?'/)
     ),
 
     nil_literal: $ => token(
