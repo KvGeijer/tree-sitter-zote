@@ -1,9 +1,24 @@
 {
+  "name": "tree-sitter-zote",
+  "version": "0.1.0",
+  "description": "Zote grammar for tree-sitter",
+  "author": "Kåre von Geijer",
+  "license": "MIT",
+  "main": "bindings/node",
   "dependencies": {
     "nan": "^2.18.0"
   },
   "devDependencies": {
     "tree-sitter-cli": "^0.20.8"
   },
-  "main": "bindings/node"
+  "repository": "https://github.com/kvgeijer/tree-sitter-zote",
+  "tree-sitter": [
+    {
+      "scope": "source.zote",
+      "file-types": [
+        "zote"
+      ],
+      "injection-regex": "zote"
+    }
+  ]
 }

@@ -36,11 +36,9 @@ module.exports = grammar({
     ),
 
     macro_statement: $ => seq(
-      $.identifier,
+      field("name", $.identifier),
       token.immediate('!'),
-      token.immediate('('),
-      sepBy(',', $._expression),
-      ')',
+      field('arguments', $.arguments),
       ';'
     ),
 
@@ -124,8 +122,8 @@ module.exports = grammar({
       prec(-1, 'return'),
     ),
     
-    break_expression: $ => 'break',
-    continue_expression: $ => 'continue',
+    break_expression: $ => prec.left('break'),
+    continue_expression: $ => prec.left('continue'),
     
     modify_assign_expression: $ => seq(
       field('lvalue', choice($.identifier, $.index_pattern)),
