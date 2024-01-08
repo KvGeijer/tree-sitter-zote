@@ -17,7 +17,7 @@ const PREC = {
 };
 
 module.exports = grammar({
-  name: 'Zote',
+  name: 'zote',
 
   extras: $ => [
     /\s/,
