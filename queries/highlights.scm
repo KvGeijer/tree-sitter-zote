@@ -5,6 +5,7 @@
  (#match? @constant "^[A-Z][A-Z\\d_]+$'"))
 
 (call_expression function: (identifier) @function)
+(pipe_expression (identifier) @function)
 
 (function_declaration name: (_) @function)
 
@@ -39,7 +40,19 @@
   "match"
   "return"
   "while"
+  "and"
+  "or"
 ] @keyword
+(for_expression "in" @keyword) ; will 'for i in in' break?
+
+
+[
+  "="
+  ":="
+  "->"
+  ">>"
+  "\\>>"
+] @operator
 
 (boolean_literal) @constant.builtin
 (integer_literal) @constant.builtin

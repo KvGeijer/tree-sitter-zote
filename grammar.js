@@ -48,7 +48,7 @@ module.exports = grammar({
     ),
 
     variable_declaration: $ => seq(
-      $._pattern,
+      $._pattern_decl,
       ':=',
       $._expression,
       ';'
@@ -70,7 +70,7 @@ module.exports = grammar({
 
     parameters: $ => seq(
       '(',
-      sepBy(',', $._pattern),
+      sepBy(',', $._pattern_decl),
       ')',
     ),
 
@@ -112,7 +112,7 @@ module.exports = grammar({
 
     lambda_expression: $ => seq(
       '\\',
-      sepBy(',', $._pattern),
+      alias(sepBy(',', $._pattern_decl), $.parameters),
       '->',
       $._expression,
     ),
@@ -200,7 +200,7 @@ module.exports = grammar({
 
     for_expression: $ => seq(
       'for',
-      field('pattern', $._pattern),
+      field('pattern', $._pattern_decl),
       'in',
       field('value', $._expression),
       field('body', $._expression),
@@ -228,7 +228,7 @@ module.exports = grammar({
     ),
 
     match_arm: $ => prec.right(seq(
-      field('pattern', $._pattern),
+      field('pattern', $._pattern_decl),
       '->',
       choice(
         seq(field('value', $._expression), ','),
@@ -237,7 +237,7 @@ module.exports = grammar({
     )),
 
     last_match_arm: $ => seq(
-      field('pattern', $._pattern),
+      field('pattern', $._pattern_decl),
       '->',
       field('value', $._expression),
       optional(','),
@@ -281,7 +281,7 @@ module.exports = grammar({
     
     for_expression_ending_with_block: $ => seq(
       'for',
-      field('pattern', $._pattern),
+      field('pattern', $._pattern_decl),
       'in',
       field('value', $._expression),
       field('body', $._expression_ending_with_block),
@@ -360,6 +360,13 @@ module.exports = grammar({
       $.index_pattern,
     ),
 
+    _pattern_decl: $ => choice(
+      $.identifier,
+      $._literal, 
+      $.neg_pattern,
+      $.par_pattern_decl,
+    ),
+
     index_pattern: $ => prec(PREC.call, seq(
       $._expression, 
       $._index
@@ -369,6 +376,12 @@ module.exports = grammar({
     par_pattern: $ => seq(
       '(',
       sepBy2(',', $._pattern),
+      ')'
+    ),
+    
+    par_pattern_decl: $ => seq(
+      '(',
+      sepBy2(',', $._pattern_decl),
       ')'
     ),
     
@@ -413,7 +426,12 @@ module.exports = grammar({
     line_comment: _ => token(seq(
       '//', /.*/,
     )),
-  }
+  },
+
+  conflicts: ($) => [
+    // These are essentially parsed the same, and separated for queries
+    [$._pattern, $._pattern_decl],
+  ],
 });
 
 /**
