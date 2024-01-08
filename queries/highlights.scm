@@ -5,7 +5,7 @@
  (#match? @constant "^[A-Z][A-Z\\d_]+$'"))
 
 (call_expression function: (identifier) @function)
-(pipe_expression (identifier) @function)
+(pipe_expression (identifier) @function . )
 
 (function_declaration name: (_) @function)
 
