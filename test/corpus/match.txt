@@ -4,7 +4,7 @@ Match expression
 
 match [1,2,3] {
   (1, 2, 4) -> false,
-  (1, val) -> false,
+  (-1, val) -> false,
   something -> true,
 }
 
@@ -20,7 +20,7 @@ match [1,2,3] {
           (boolean_literal)
         )
         (match_arm
-          (par_pattern (integer_literal) (identifier))
+          (par_pattern (neg_pattern (integer_literal)) (identifier))
           (boolean_literal)
         )
         (match_arm

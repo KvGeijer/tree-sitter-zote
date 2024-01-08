@@ -357,7 +357,7 @@ module.exports = grammar({
 
     _pattern: $ => choice(
       $.identifier,
-      $._literal,
+      choice($._literal, $.neg_pattern),
       $.par_pattern,
       $.index_pattern,
     ),
@@ -381,6 +381,11 @@ module.exports = grammar({
       $.float_literal,
       $.nil_literal,
     ),
+
+    neg_pattern: $ => prec(PREC.unary, seq(
+      '-',
+      choice($.integer_literal, $.float_literal),
+    )),
 
     integer_literal: _ => token(
         /0|([1-9][0-9]*)/

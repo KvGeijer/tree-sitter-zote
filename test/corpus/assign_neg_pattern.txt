@@ -1,0 +1,16 @@
+======================
+Assign negative pattern 
+======================
+
+-1 = 13.37;
+
+---
+
+(source_file
+  (expression_statement
+    (assign_expression
+      (neg_pattern (integer_literal))
+      (float_literal)
+    )
+  )
+)
