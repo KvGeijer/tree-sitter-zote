@@ -7,6 +7,11 @@
 (call_expression function: (identifier) @function)
 (pipe_expression (identifier) @function . )
 
+
+(assign_expression (identifier) @function (lambda_expression))
+(assign_expression (identifier) @function (init_pipe_expression))
+(variable_declaration (identifier) @function (lambda_expression))
+(variable_declaration (identifier) @function (init_pipe_expression))
 (function_declaration name: (_) @function)
 
 (parameters (_) @variable.parameter)
