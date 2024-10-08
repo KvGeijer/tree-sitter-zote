@@ -8,7 +8,7 @@ Here is an example of how it looks in Helix when using the theme `vim_dark_high_
 
 ## Installation
 
-This repo contains the generate C code, in line with what is expected from [tree-sitter](https://tree-sitter.github.io/tree-sitter/). This can then be compiled and integrated with most modern editors.
+This repo contains the generated C code, in line with what is expected from [tree-sitter](https://tree-sitter.github.io/tree-sitter/). This can then be compiled and integrated with most modern editors.
 
 The folder `queries` contains the queries for syntax highlighting, and should be used when integrating with your chosen editor.
 
