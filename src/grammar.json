@@ -94,8 +94,12 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_pattern_decl"
+          "type": "FIELD",
+          "name": "decl",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_pattern_decl"
+          }
         },
         {
           "type": "STRING",

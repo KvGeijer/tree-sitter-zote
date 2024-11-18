@@ -48,7 +48,7 @@ module.exports = grammar({
     ),
 
     variable_declaration: $ => seq(
-      $._pattern_decl,
+      field('decl', $._pattern_decl),
       ':=',
       $._expression,
       ';'
