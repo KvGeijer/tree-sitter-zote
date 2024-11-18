@@ -2,7 +2,7 @@
 
 ; Assume all-caps names are constants
 ((identifier) @constant
- (#match? @constant "^[A-Z][A-Z\\d_]+$'"))
+ (#match? @constant "^[A-Z][A-Z\\d_]*$"))
 
 (call_expression function: (identifier) @function)
 (pipe_expression (identifier) @function . )
