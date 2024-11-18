@@ -14,6 +14,9 @@
 (variable_declaration (identifier) @function (init_pipe_expression))
 (function_declaration name: (_) @function)
 
+; Simply treat all unknown identifiers as variables
+((identifier) @variable)
+
 (parameters (_) @variable.parameter)
 
 (macro_statement name: (_) @function.macro "!" @function.macro)
@@ -57,6 +60,23 @@
   "->"
   ">>"
   "\\>>"
+  "=="
+  "!="
+  ">"
+  "<"
+  "<="
+  ">="
+  "+="
+  "-="
+  "/="
+  "*="
+  "++="
+  "+"
+  "-"
+  "/"
+  "*"
+  "++"
+
 ] @operator
 
 (boolean_literal) @constant.builtin
