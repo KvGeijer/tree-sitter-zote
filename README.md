@@ -1,6 +1,6 @@
 # A tree-sitter grammar for Zote
 
-After 25 days of Advent of Code in [Zote](https://github.com/KvGeijer/zote) I started missing the syntax highlighting and syntax errors from other languages.
+This repo contains a tree-sitter for [Zote](https://github.com/KvGeijer/zote), including queries for syntax highlighting. After 25 days of Advent of Code in [Zote](https://github.com/KvGeijer/zote) I started missing the highlighting and syntax errors from other languages. It would be ideal to implement a language server as well to cover syntax errors as well.
 
 Here is an example of how it looks in Helix when using the theme `vim_dark_high_contrast`
 
@@ -34,7 +34,7 @@ source = {git = "https://github.com/KvGeijer/tree-sitter-zote", rev = "main"}
 This will add `Zote` as a language, detect it automatically, and connect it with this tree-sitter. Then, to get syntax highlighting, add the queries from this repository to your helix runtime config.
 
 ```
-cp -r tree-sitter-zote/queries ~/.config/helix/runtime/zote
+cp -r tree-sitter-zote/queries ~/.config/helix/runtime/queries/zote
 ```
 
 Finally, fetch and build the grammar.
